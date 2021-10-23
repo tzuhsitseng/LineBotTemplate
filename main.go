@@ -17,7 +17,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
+	"strings"
 
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
@@ -50,14 +50,115 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				quota, err := bot.GetMessageQuota().Do()
-				if err != nil {
-					log.Println("Quota err:", err)
+				if !strings.HasPrefix(message.Text, "?") &&
+					!strings.HasSuffix(message.Text, "?") &&
+					!strings.HasPrefix(message.Text, "？") &&
+					!strings.HasSuffix(message.Text, "？") {
+					return
 				}
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.ID+":"+message.Text+" OK! remain message:"+strconv.FormatInt(quota.Value, 10))).Do(); err != nil {
-					log.Print(err)
+
+				msg := strings.TrimPrefix(message.Text, "?")
+				msg = strings.TrimPrefix(msg, "？")
+				msg = strings.TrimSuffix(msg, "?")
+				msg = strings.TrimSuffix(msg, "？")
+
+				switch msg {
+				case "常用指令":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewMessageAction("交車", "交車?"),
+						linebot.NewMessageAction("外觀", "外觀相關?"),
+						linebot.NewMessageAction("內裝", "內裝相關?"),
+						linebot.NewMessageAction("設定", "設定相關?"),
+						linebot.NewMessageAction("行車記錄器", "行車記錄器?"),
+						linebot.NewMessageAction("輪胎", "輪胎相關?"),
+						linebot.NewMessageAction("防跳石網", "防跳石網?"),
+						linebot.NewMessageAction("鑰匙皮套", "鑰匙皮套?"),
+						linebot.NewMessageAction("遮陽簾", "遮陽簾?"),
+						linebot.NewMessageAction("隔熱紙", "隔熱紙?"),
+					)
+				case "交車":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("交車前驗車檢查項目2.0", "https://drive.google.com/file/d/19N6rUajn42eWfQJMikYySdcyGEvr1QR4/view"),
+						linebot.NewURIAction("正式交車檢查2.0", "https://drive.google.com/file/d/1S-XPfwNZFWAwQzc3gZbOj3vM8dP7TXR4/view"),
+					)
+
+				case "外觀相關":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("水簾洞與導水條", "https://kamiq.club/article?sid=324&aid=378"),
+						linebot.NewURIAction("雨刷異音、會跳、立雨刷與更換", "https://kamiq.club/article?sid=324&aid=379"),
+						linebot.NewURIAction("後視鏡指甲倒插問題", "https://kamiq.club/article?sid=324&aid=381"),
+						linebot.NewURIAction("第三煞車燈水氣無法散去", "https://kamiq.club/article?sid=324&aid=382"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=324"),
+					)
+				case "內裝相關":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("車室異音-低速篇", "https://kamiq.club/article?sid=325&aid=383"),
+						linebot.NewURIAction("車室異音-高速篇", "https://kamiq.club/article?sid=325&aid=384"),
+						linebot.NewURIAction("車室靜音工程(含DIY與外廠安裝)", "https://kamiq.club/article?sid=325&aid=386"),
+						linebot.NewURIAction("冷氣濾網更換", "https://kamiq.club/article?sid=325&aid=400"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=325"),
+					)
+				case "設定相關":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("搖控器啟閉車窗示範", "https://kamiq.club/article?sid=328&aid=375"),
+						linebot.NewURIAction("Keyless鑰匙沒電手動開門方式", "https://kamiq.club/article?sid=328&aid=376"),
+						linebot.NewURIAction("怠速引擎熄火判斷條件", "https://kamiq.club/article?sid=328&aid=377"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=328"),
+					)
+				case "行車記錄器":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("Garmin 66WD", "https://kamiq.club/article?sid=329&aid=394"),
+						linebot.NewURIAction("HP S970 (電子後視鏡)", "https://kamiq.club/article?sid=329&aid=395"),
+						linebot.NewURIAction("DOD RX900", "https://kamiq.club/article?sid=329&aid=503"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=328"),
+					)
+				case "輪胎相關":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("胎壓偵測器", "https://kamiq.club/article?sid=334&aid=388"),
+						linebot.NewURIAction("有線/無線打氣機", "https://kamiq.club/article?sid=334&aid=456"),
+						linebot.NewURIAction("怠速引擎熄火判斷條件", "https://kamiq.club/article?sid=328&aid=377"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=334"),
+					)
+				case "防跳石網":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("防跳石網安裝", "https://kamiq.club/article?sid=335&aid=402"),
+						linebot.NewURIAction("防跳石網配色參考", "https://kamiq.club/article?sid=335&aid=404"),
+						linebot.NewURIAction("怠速引擎熄火判斷條件", "https://kamiq.club/article?sid=328&aid=377"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=335"),
+					)
+				case "鑰匙皮套":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("Hsu's 頑皮革", "https://kamiq.club/article?sid=338&aid=416"),
+						linebot.NewURIAction("Story Leather", "https://kamiq.club/article?sid=338&aid=425"),
+						linebot.NewURIAction("賽頓精品手工皮件", "https://kamiq.club/article?sid=338&aid=423"),
+						linebot.NewURIAction("JC手作客製皮套", "https://kamiq.club/article?sid=338&aid=424"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=338"),
+					)
+				case "遮陽簾":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("晴天遮陽簾", "https://kamiq.club/article?sid=330&aid=438"),
+						linebot.NewURIAction("徐府遮陽簾", "https://kamiq.club/article?sid=330&aid=439"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=330"),
+					)
+				case "隔熱紙":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("GAMA-E系列", "https://kamiq.club/article?sid=330&aid=403"),
+						linebot.NewURIAction("Carlife X系列", "https://kamiq.club/article?sid=330&aid=417"),
+						linebot.NewURIAction("3M極黑系列", "https://kamiq.club/article?sid=330&aid=499"),
+						linebot.NewURIAction("Solar Gard 舒熱佳鑽石 LX 系列", "https://kamiq.club/article?sid=330&aid=500"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=330"),
+					)
 				}
+
 			}
 		}
 	}
+}
+
+func reply(replyToken, msg string, actions ...linebot.TemplateAction) {
+	imgCarouselCols := make([]*linebot.ImageCarouselColumn, 0, len(actions))
+	for _, c := range actions {
+		imgCarouselCols = append(imgCarouselCols, linebot.NewImageCarouselColumn("https://kamiq.club/upload/36/favicon_images/c1a630ef-c78f-43cc-b95e-0619f3f4da4d.jpg", c))
+	}
+	_, _ = bot.ReplyMessage(replyToken, linebot.NewTemplateMessage(msg, linebot.NewImageCarouselTemplate(imgCarouselCols...))).Do()
 }
