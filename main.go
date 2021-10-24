@@ -63,25 +63,29 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				msg = strings.TrimSuffix(msg, "？")
 
 				switch msg {
-				case "常用指令":
+				case "指令", "常用指令":
 					reply(event.ReplyToken, message.Text,
-						linebot.NewMessageAction("交車", "交車?"),
-						linebot.NewMessageAction("外觀", "外觀相關?"),
-						linebot.NewMessageAction("內裝", "內裝相關?"),
-						linebot.NewMessageAction("設定", "設定相關?"),
-						linebot.NewMessageAction("行車記錄器", "行車記錄器?"),
-						linebot.NewMessageAction("輪胎", "輪胎相關?"),
-						linebot.NewMessageAction("防跳石網", "防跳石網?"),
-						linebot.NewMessageAction("鑰匙皮套", "鑰匙皮套?"),
-						linebot.NewMessageAction("遮陽簾", "遮陽簾?"),
-						linebot.NewMessageAction("隔熱紙", "隔熱紙?"),
+						linebot.NewMessageAction("交車", "交車？"),
+						linebot.NewMessageAction("外觀", "外觀相關？"),
+						linebot.NewMessageAction("內裝", "內裝相關？"),
+						linebot.NewMessageAction("設定", "設定相關？"),
+						linebot.NewMessageAction("行車記錄器", "行車記錄器？"),
+						linebot.NewMessageAction("輪胎", "輪胎相關？"),
+						linebot.NewMessageAction("防跳石網", "防跳石網？"),
+						linebot.NewMessageAction("鑰匙皮套", "鑰匙皮套？"),
+						linebot.NewMessageAction("遮陽簾", "遮陽簾？"),
+						linebot.NewMessageAction("隔熱紙", "隔熱紙？"),
+						linebot.NewURIAction("更多 (尚未更新)", "https://drive.google.com/file/d/1AM7PAPzMhp9BT3qKEP0lMdDKEx62kRSW/view"),
 					)
 				case "交車":
 					reply(event.ReplyToken, message.Text,
 						linebot.NewURIAction("交車前驗車檢查項目2.0", "https://drive.google.com/file/d/19N6rUajn42eWfQJMikYySdcyGEvr1QR4/view"),
 						linebot.NewURIAction("正式交車檢查2.0", "https://drive.google.com/file/d/1S-XPfwNZFWAwQzc3gZbOj3vM8dP7TXR4/view"),
 					)
-
+				case "族貼", "族框":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("KAMIQ TW CLUB 族貼 | 族框", "https://kamiq.club/article?sid=350&aid=434"),
+					)
 				case "外觀相關":
 					reply(event.ReplyToken, message.Text,
 						linebot.NewURIAction("水簾洞與導水條", "https://kamiq.club/article?sid=324&aid=378"),
@@ -116,7 +120,6 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					reply(event.ReplyToken, message.Text,
 						linebot.NewURIAction("胎壓偵測器", "https://kamiq.club/article?sid=334&aid=388"),
 						linebot.NewURIAction("有線/無線打氣機", "https://kamiq.club/article?sid=334&aid=456"),
-						linebot.NewURIAction("怠速引擎熄火判斷條件", "https://kamiq.club/article?sid=328&aid=377"),
 						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=334"),
 					)
 				case "防跳石網":
@@ -148,6 +151,46 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						linebot.NewURIAction("Solar Gard 舒熱佳鑽石 LX 系列", "https://kamiq.club/article?sid=330&aid=500"),
 						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=330"),
 					)
+				case "避光墊":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("愛力美奈納碳避光墊", "https://kamiq.club/article?sid=333&aid=427"),
+						linebot.NewURIAction("BSM專用仿麂皮避光墊", "https://kamiq.club/article?sid=333&aid=428"),
+					)
+				case "晴雨窗":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("晴雨窗", "https://kamiq.club/article?sid=333&aid=445"),
+					)
+				case "腳踏墊":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("3D卡固", "https://kamiq.club/article?sid=331&aid=406"),
+						linebot.NewURIAction("Škoda原廠腳踏墊", "https://kamiq.club/article?sid=331&aid=420"),
+						linebot.NewURIAction("台中裕峰訂製款", "https://kamiq.club/article?sid=331&aid=419"),
+					)
+				case "後車廂墊":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("後車廂墊", "https://kamiq.club/article?sid=331&aid=430"),
+						linebot.NewURIAction("3M安美", "https://kamiq.club/article?sid=331&aid=418"),
+					)
+				case "車側飾板", "後廂護板":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("車側飾板|後廂護板", "https://kamiq.club/article?sid=336"),
+					)
+				case "其他週邊":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("旋轉杯架", "https://kamiq.club/article?sid=350&aid=436"),
+						linebot.NewURIAction("後行李箱連動燈", "https://kamiq.club/article?sid=350&aid=448"),
+						linebot.NewURIAction("光控燈膜", "https://kamiq.club/article?sid=350&aid=446"),
+						linebot.NewURIAction("KAMIQ TW CLUB 族貼 | 族框", "https://kamiq.club/article?sid=350&aid=434"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=350"),
+					)
+				case "原廠週邊":
+					reply(event.ReplyToken, message.Text,
+						linebot.NewURIAction("原廠週邊價格表", "https://kamiq.club/article?sid=349&aid=407"),
+						linebot.NewURIAction("原廠檔泥板", "https://kamiq.club/article?sid=349&aid=444"),
+						linebot.NewURIAction("原廠門側垃圾桶", "https://kamiq.club/article?sid=349&aid=442"),
+						linebot.NewURIAction("原廠多媒體底座", "https://kamiq.club/article?sid=349&aid=443"),
+						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=349"),
+					)
 				}
 
 			}
@@ -156,9 +199,36 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func reply(replyToken, msg string, actions ...linebot.TemplateAction) {
-	imgCarouselCols := make([]*linebot.ImageCarouselColumn, 0, len(actions))
-	for _, c := range actions {
-		imgCarouselCols = append(imgCarouselCols, linebot.NewImageCarouselColumn("https://kamiq.club/upload/36/favicon_images/c1a630ef-c78f-43cc-b95e-0619f3f4da4d.jpg", c))
+	contents := make([]*linebot.BubbleContainer, 0, len(actions))
+	for _, act := range actions {
+		btnComponent := make([]linebot.FlexComponent, 0)
+		btnComponent = append(btnComponent, &linebot.ButtonComponent{
+			Type:   linebot.FlexComponentTypeButton,
+			Action: act,
+			Style:  linebot.FlexButtonStyleTypePrimary,
+			//Color:  "#8E8E8E",
+		})
+		contents = append(contents, &linebot.BubbleContainer{
+			Type: linebot.FlexContainerTypeBubble,
+			Hero: &linebot.ImageComponent{
+				Type:        linebot.FlexComponentTypeImage,
+				URL:         "https://kamiq.club/upload/36/favicon_images/c1a630ef-c78f-43cc-b95e-0619f3f4da4d.jpg",
+				Size:        linebot.FlexImageSizeTypeFull,
+				AspectRatio: linebot.FlexImageAspectRatioType20to13,
+				AspectMode:  linebot.FlexImageAspectModeTypeFit,
+			},
+			Footer: &linebot.BoxComponent{
+				Type:     linebot.FlexComponentTypeButton,
+				Layout:   linebot.FlexBoxLayoutTypeVertical,
+				Contents: btnComponent,
+			},
+		})
 	}
-	_, _ = bot.ReplyMessage(replyToken, linebot.NewTemplateMessage(msg, linebot.NewImageCarouselTemplate(imgCarouselCols...))).Do()
+
+	if _, err := bot.ReplyMessage(replyToken, linebot.NewFlexMessage(msg, &linebot.CarouselContainer{
+		Type:     linebot.FlexContainerTypeCarousel,
+		Contents: contents,
+	})).Do(); err != nil {
+		log.Println(err)
+	}
 }
