@@ -47,7 +47,11 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, event := range events {
-		if event.Type == linebot.EventTypeMessage {
+		log.Printf("group id: %s", event.Source.GroupID)
+
+		if event.Type == linebot.EventTypeMemberJoined {
+			//welcome(event.ReplyToken)
+		} else if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 				if !strings.HasPrefix(message.Text, "?") &&
@@ -195,6 +199,25 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 			}
 		}
+	}
+}
+
+func welcome(replyToken string) {
+	if _, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage(`
+		新朋友您好!!
+		歡迎加入KamiQ車主群，
+		
+		有任何問題都可以先爬文，不懂再詢問唷～
+		==========
+		KamiQ 車友群公開資訊
+		https://kamiq.club/
+		==========
+		群組內的訊息很多，記得關提醒，尤其上班日
+		記事本內有很多資料可以先爬文一下
+		
+		PS.KamiQ機器人會不定期進化成長!!
+	`)).Do(); err != nil {
+		log.Print(err)
 	}
 }
 
