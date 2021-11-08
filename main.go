@@ -24,6 +24,14 @@ import (
 
 var bot *linebot.Client
 
+var (
+	groupIDs = map[string]string{
+		"C9e940992c239eb57663525cde6b26a6b": "bot測試群",
+		"Cc36a07572245c408431d11bd7fd94a45": "北區二群",
+		"C9fff1abaab5eddda37095a31b11b9335": "車主三群",
+	}
+)
+
 func main() {
 	var err error
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
@@ -47,10 +55,24 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, event := range events {
-		log.Printf("group id: %s", event.Source.GroupID)
+		groupID := event.Source.GroupID
+		log.Printf("group id: %s", groupID)
 
 		if event.Type == linebot.EventTypeMemberJoined {
-			//welcome(event.ReplyToken)
+			if _, ok := groupIDs[groupID]; ok {
+				names := make([]string, 0)
+				for _, member := range event.Members {
+					userID := member.UserID
+					log.Printf("user id: %s", userID)
+					if profile, err := bot.GetGroupMemberProfile(groupID, userID).Do(); err != nil {
+						log.Println(err)
+					} else {
+						names = append(names, profile.DisplayName)
+					}
+				}
+
+				welcome(event.ReplyToken, strings.Join(names, ","))
+			}
 		} else if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
@@ -67,6 +89,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				msg = strings.TrimSuffix(msg, "？")
 
 				switch msg {
+				case "test welcome":
+					welcome(event.ReplyToken, "test")
 				case "指令", "常用指令":
 					reply(event.ReplyToken, message.Text,
 						linebot.NewMessageAction("交車", "交車？"),
@@ -202,23 +226,95 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func welcome(replyToken string) {
-	if _, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage(`
-		新朋友您好!!
-		歡迎加入KamiQ車主群，
-		
-		有任何問題都可以先爬文，不懂再詢問唷～
-		==========
-		KamiQ 車友群公開資訊
-		https://kamiq.club/
-		==========
-		群組內的訊息很多，記得關提醒，尤其上班日
-		記事本內有很多資料可以先爬文一下
-		
-		PS.KamiQ機器人會不定期進化成長!!
-	`)).Do(); err != nil {
+func welcome(replyToken, names string) {
+	if names != "" {
+		names = fmt.Sprintf(" %s ", names)
+	}
+	if _, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage(fmt.Sprintf(
+		`新朋友`+names+`您好!!
+歡迎加入KamiQ車主限定群
+
+有任何問題可於
+官網查詢、詢問機器人
+或直接發問哦~
+群組訊息較多，記得關提醒!!
+
+KamiQ 車友群官網
+https://kamiq.club/`)),
+		linebot.NewFlexMessage("資訊卡", &linebot.CarouselContainer{
+			Type:     linebot.FlexContainerTypeCarousel,
+			Contents: makeInfoCard(),
+		})).Do(); err != nil {
 		log.Print(err)
 	}
+}
+
+func makeInfoCard() []*linebot.BubbleContainer {
+	contents := make([]*linebot.BubbleContainer, 0)
+	newsComponent := make([]linebot.FlexComponent, 0)
+	newsComponent = append(newsComponent, &linebot.ButtonComponent{
+		Type:   linebot.FlexComponentTypeButton,
+		Action: linebot.NewURIAction("入群必讀", "https://kamiq.club/news?nid=214"),
+		Style:  linebot.FlexButtonStyleTypePrimary,
+	})
+	siteComponent := make([]linebot.FlexComponent, 0)
+	siteComponent = append(siteComponent, &linebot.ButtonComponent{
+		Type:   linebot.FlexComponentTypeButton,
+		Action: linebot.NewURIAction("KamiQ車友群官網", "https://kamiq.club"),
+		Style:  linebot.FlexButtonStyleTypePrimary,
+	})
+	catcherComponent := make([]linebot.FlexComponent, 0)
+	catcherComponent = append(catcherComponent, &linebot.ButtonComponent{
+		Type:   linebot.FlexComponentTypeButton,
+		Action: linebot.NewURIAction("車牌抓抓樂登記", "http://tw.kamiq.club/catchcar"),
+		Style:  linebot.FlexButtonStyleTypePrimary,
+	})
+	contents = append(contents, &linebot.BubbleContainer{
+		Type: linebot.FlexContainerTypeBubble,
+		Hero: &linebot.ImageComponent{
+			Type:        linebot.FlexComponentTypeImage,
+			URL:         "https://kamiq.club/upload/36/news_images/6b8a6da0-cafb-4904-87b7-d9ffa01b2075.jpeg",
+			Size:        linebot.FlexImageSizeTypeFull,
+			AspectRatio: linebot.FlexImageAspectRatioType20to13,
+			AspectMode:  linebot.FlexImageAspectModeTypeFit,
+		},
+		Footer: &linebot.BoxComponent{
+			Type:     linebot.FlexComponentTypeButton,
+			Layout:   linebot.FlexBoxLayoutTypeVertical,
+			Contents: newsComponent,
+		},
+	})
+	contents = append(contents, &linebot.BubbleContainer{
+		Type: linebot.FlexContainerTypeBubble,
+		Hero: &linebot.ImageComponent{
+			Type:        linebot.FlexComponentTypeImage,
+			URL:         "https://kamiq.club/upload/36/logo_images/5af0967c-2aec-492b-833c-9b95ea8e29dd.jpg",
+			Size:        linebot.FlexImageSizeTypeFull,
+			AspectRatio: linebot.FlexImageAspectRatioType20to13,
+			AspectMode:  linebot.FlexImageAspectModeTypeFit,
+		},
+		Footer: &linebot.BoxComponent{
+			Type:     linebot.FlexComponentTypeButton,
+			Layout:   linebot.FlexBoxLayoutTypeVertical,
+			Contents: siteComponent,
+		},
+	})
+	contents = append(contents, &linebot.BubbleContainer{
+		Type: linebot.FlexContainerTypeBubble,
+		Hero: &linebot.ImageComponent{
+			Type:        linebot.FlexComponentTypeImage,
+			URL:         "https://kamiq.club/upload/36/news_images/5962e075-4be5-4060-8737-5142613c2ba9.jpg",
+			Size:        linebot.FlexImageSizeTypeFull,
+			AspectRatio: linebot.FlexImageAspectRatioType20to13,
+			AspectMode:  linebot.FlexImageAspectModeTypeFit,
+		},
+		Footer: &linebot.BoxComponent{
+			Type:     linebot.FlexComponentTypeButton,
+			Layout:   linebot.FlexBoxLayoutTypeVertical,
+			Contents: catcherComponent,
+		},
+	})
+	return contents
 }
 
 func reply(replyToken, msg string, actions ...linebot.TemplateAction) {
