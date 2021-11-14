@@ -50,6 +50,7 @@ var (
 		"C9e940992c239eb57663525cde6b26a6b": "bot測試群",
 		"Cc36a07572245c408431d11bd7fd94a45": "北區二群",
 		"C9fff1abaab5eddda37095a31b11b9335": "車主三群",
+		"Ca23770eb185ea43e725a71cda54a7e9e": "退休生活",
 	}
 )
 
@@ -276,7 +277,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					)
 				}
 			case *linebot.ImageMessage:
-				if event.Source.GroupID == "C9e940992c239eb57663525cde6b26a6b" {
+				if event.Source.GroupID == "C9e940992c239eb57663525cde6b26a6b" || event.Source.GroupID == "Ca23770eb185ea43e725a71cda54a7e9e" {
 					resp, err := bot.GetMessageContent(message.ID).Do()
 					if err != nil {
 						log.Println(err)
