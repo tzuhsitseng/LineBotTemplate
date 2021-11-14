@@ -239,8 +239,7 @@ func welcome(replyToken, names string) {
 或直接發問哦~
 群組訊息較多，記得關提醒!!
 
-KamiQ 車友群官網
-https://kamiq.club/`)),
+以下連結請務必看一下哦~`)),
 		linebot.NewFlexMessage("資訊卡", &linebot.CarouselContainer{
 			Type:     linebot.FlexContainerTypeCarousel,
 			Contents: makeInfoCard(),
@@ -299,21 +298,21 @@ func makeInfoCard() []*linebot.BubbleContainer {
 			Contents: siteComponent,
 		},
 	})
-	contents = append(contents, &linebot.BubbleContainer{
-		Type: linebot.FlexContainerTypeBubble,
-		Hero: &linebot.ImageComponent{
-			Type:        linebot.FlexComponentTypeImage,
-			URL:         "https://kamiq.club/upload/36/news_images/5962e075-4be5-4060-8737-5142613c2ba9.jpg",
-			Size:        linebot.FlexImageSizeTypeFull,
-			AspectRatio: linebot.FlexImageAspectRatioType20to13,
-			AspectMode:  linebot.FlexImageAspectModeTypeCover,
-		},
-		Footer: &linebot.BoxComponent{
-			Type:     linebot.FlexComponentTypeButton,
-			Layout:   linebot.FlexBoxLayoutTypeVertical,
-			Contents: catcherComponent,
-		},
-	})
+	//contents = append(contents, &linebot.BubbleContainer{
+	//	Type: linebot.FlexContainerTypeBubble,
+	//	Hero: &linebot.ImageComponent{
+	//		Type:        linebot.FlexComponentTypeImage,
+	//		URL:         "https://kamiq.club/upload/36/news_images/5962e075-4be5-4060-8737-5142613c2ba9.jpg",
+	//		Size:        linebot.FlexImageSizeTypeFull,
+	//		AspectRatio: linebot.FlexImageAspectRatioType20to13,
+	//		AspectMode:  linebot.FlexImageAspectModeTypeCover,
+	//	},
+	//	Footer: &linebot.BoxComponent{
+	//		Type:     linebot.FlexComponentTypeButton,
+	//		Layout:   linebot.FlexBoxLayoutTypeVertical,
+	//		Contents: catcherComponent,
+	//	},
+	//})
 	return contents
 }
 
