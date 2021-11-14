@@ -276,7 +276,7 @@ func makeInfoCard() []*linebot.BubbleContainer {
 			URL:         "https://kamiq.club/upload/36/news_images/6b8a6da0-cafb-4904-87b7-d9ffa01b2075.jpeg",
 			Size:        linebot.FlexImageSizeTypeFull,
 			AspectRatio: linebot.FlexImageAspectRatioType20to13,
-			AspectMode:  linebot.FlexImageAspectModeTypeFit,
+			AspectMode:  linebot.FlexImageAspectModeTypeCover,
 		},
 		Footer: &linebot.BoxComponent{
 			Type:     linebot.FlexComponentTypeButton,
@@ -306,7 +306,7 @@ func makeInfoCard() []*linebot.BubbleContainer {
 			URL:         "https://kamiq.club/upload/36/news_images/5962e075-4be5-4060-8737-5142613c2ba9.jpg",
 			Size:        linebot.FlexImageSizeTypeFull,
 			AspectRatio: linebot.FlexImageAspectRatioType20to13,
-			AspectMode:  linebot.FlexImageAspectModeTypeFit,
+			AspectMode:  linebot.FlexImageAspectModeTypeCover,
 		},
 		Footer: &linebot.BoxComponent{
 			Type:     linebot.FlexComponentTypeButton,
