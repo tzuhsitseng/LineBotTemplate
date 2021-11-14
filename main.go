@@ -468,7 +468,7 @@ func reply(replyToken, msg string, actions ...linebot.TemplateAction) {
 				URL:         "https://kamiq.club/upload/36/favicon_images/c1a630ef-c78f-43cc-b95e-0619f3f4da4d.jpg",
 				Size:        linebot.FlexImageSizeTypeFull,
 				AspectRatio: linebot.FlexImageAspectRatioType20to13,
-				AspectMode:  linebot.FlexImageAspectModeTypeCover,
+				AspectMode:  linebot.FlexImageAspectModeTypeFit,
 			},
 			Footer: &linebot.BoxComponent{
 				Type:     linebot.FlexComponentTypeButton,
