@@ -423,10 +423,10 @@ func makeInfoCard() []*linebot.BubbleContainer {
 		Type: linebot.FlexContainerTypeBubble,
 		Hero: &linebot.ImageComponent{
 			Type:        linebot.FlexComponentTypeImage,
-			URL:         "https://kamiq.club/upload/36/logo_images/5af0967c-2aec-492b-833c-9b95ea8e29dd.jpg",
+			URL:         "https://i.imgur.com/Jo0JBxU.png",
 			Size:        linebot.FlexImageSizeTypeFull,
 			AspectRatio: linebot.FlexImageAspectRatioType20to13,
-			AspectMode:  linebot.FlexImageAspectModeTypeFit,
+			AspectMode:  linebot.FlexImageAspectModeTypeCover,
 		},
 		Footer: &linebot.BoxComponent{
 			Type:     linebot.FlexComponentTypeButton,
