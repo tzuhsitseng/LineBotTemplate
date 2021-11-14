@@ -13,8 +13,13 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"strings"
@@ -22,13 +27,62 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
+type Info struct {
+	Keyword  string
+	Question string
+	Answer   string
+	BtnText  string
+	URL      string
+	ImageURL string
+}
+
+type ImgurResp struct {
+	Data struct {
+		Link string `json:"link"`
+	} `json:"data"`
+}
+
 var bot *linebot.Client
+var imgurClientID string
 
 var (
 	groupIDs = map[string]string{
 		"C9e940992c239eb57663525cde6b26a6b": "bot測試群",
 		"Cc36a07572245c408431d11bd7fd94a45": "北區二群",
 		"C9fff1abaab5eddda37095a31b11b9335": "車主三群",
+	}
+)
+
+var (
+	dictionary = map[string][]Info{
+		"Keyword1": {{
+			Keyword:  "Keyword1",
+			Question: "Question1",
+			Answer:   "Answer1",
+		}},
+		"Keyword2": {{
+			Keyword:  "Keyword2-1",
+			Question: "Question2-1",
+			Answer:   "Answer2-2",
+		}, {
+			Keyword:  "Keyword2-2",
+			Question: "Question2-2",
+			Answer:   "Answer2-2",
+		}},
+		"Keyword3": {{
+			Keyword:  "Keyword3、Keyword4",
+			Question: "Question3",
+			Answer:   "Answer3",
+			URL:      "https://kamiq.club/article?sid=324&aid=378",
+		}},
+		"Keyword4": {{
+			Keyword:  "Keyword3、Keyword4",
+			Question: "Question4",
+			Answer:   "Answer4",
+			BtnText:  "底加",
+			URL:      "https://kamiq.club/article?sid=324&aid=379",
+			ImageURL: "https://kamiq.club/upload/36/article_images/eaf02858-176d-42d6-8ea1-6b96a2f4d86b.jpeg",
+		}},
 	}
 )
 
@@ -39,6 +93,7 @@ func main() {
 	http.HandleFunc("/callback", callbackHandler)
 	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
+	imgurClientID = os.Getenv("IMGUR_CLIENT_ID")
 	http.ListenAndServe(addr, nil)
 }
 
@@ -220,7 +275,22 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						linebot.NewURIAction("更多", "https://kamiq.club/article?sid=349"),
 					)
 				}
+			case *linebot.ImageMessage:
+				if event.Source.GroupID == "C9e940992c239eb57663525cde6b26a6b" {
+					resp, err := bot.GetMessageContent(message.ID).Do()
+					if err != nil {
+						log.Println(err)
+						return
+					}
 
+					url := uploadImgur(resp.Content)
+					if url != "" {
+						log.Println(fmt.Sprintf("image url: %s", url))
+						if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewImageMessage(url, url)).Do(); err != nil {
+							log.Println(err)
+						}
+					}
+				}
 			}
 		}
 	}
@@ -333,7 +403,7 @@ func reply(replyToken, msg string, actions ...linebot.TemplateAction) {
 				URL:         "https://kamiq.club/upload/36/favicon_images/c1a630ef-c78f-43cc-b95e-0619f3f4da4d.jpg",
 				Size:        linebot.FlexImageSizeTypeFull,
 				AspectRatio: linebot.FlexImageAspectRatioType20to13,
-				AspectMode:  linebot.FlexImageAspectModeTypeFit,
+				AspectMode:  linebot.FlexImageAspectModeTypeCover,
 			},
 			Footer: &linebot.BoxComponent{
 				Type:     linebot.FlexComponentTypeButton,
@@ -349,4 +419,56 @@ func reply(replyToken, msg string, actions ...linebot.TemplateAction) {
 	})).Do(); err != nil {
 		log.Println(err)
 	}
+}
+
+func uploadImgur(data io.ReadCloser) string {
+	defer data.Close()
+	content, err := ioutil.ReadAll(data)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+
+	url := "https://api.imgur.com/3/image"
+	method := "POST"
+
+	payload := &bytes.Buffer{}
+	writer := multipart.NewWriter(payload)
+	_ = writer.WriteField("image", string(content))
+	err = writer.Close()
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, payload)
+
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	req.Header.Add("Authorization", fmt.Sprintf("Client-ID %s", imgurClientID))
+
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	res, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+
+	resp := ImgurResp{}
+	if err := json.Unmarshal(body, &resp); err != nil {
+		log.Println(err)
+		return ""
+	}
+
+	return resp.Data.Link
 }
