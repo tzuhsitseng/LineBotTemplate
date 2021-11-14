@@ -286,7 +286,13 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					url := uploadImgur(resp.Content)
 					if url != "" {
 						log.Println(fmt.Sprintf("image url: %s", url))
-						if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewImageMessage(url, url)).Do(); err != nil {
+						//if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewImageMessage(url, url)).Do(); err != nil {
+						//	log.Println(err)
+						//}
+						if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewFlexMessage("mock catcher", &linebot.CarouselContainer{
+							Type:     linebot.FlexContainerTypeCarousel,
+							Contents: makeMockCatcher("Chris", url),
+						})).Do(); err != nil {
 							log.Println(err)
 						}
 					}
@@ -316,6 +322,65 @@ func welcome(replyToken, names string) {
 		})).Do(); err != nil {
 		log.Print(err)
 	}
+}
+
+func makeMockCatcher(name, imageURL string) []*linebot.BubbleContainer {
+	flex1 := 1
+	flex4 := 4
+	carNumber := make([]linebot.FlexComponent, 0)
+	carNumber = append(carNumber, &linebot.TextComponent{
+		Color: "#aaaaaa",
+		Size:  linebot.FlexTextSizeTypeSm,
+		Text:  "車號",
+		Flex:  &flex1,
+	})
+	carNumber = append(carNumber, &linebot.TextComponent{
+		Color: "#666666",
+		Size:  linebot.FlexTextSizeTypeSm,
+		Text:  "BKV-3515",
+		Flex:  &flex4,
+	})
+	lineID := make([]linebot.FlexComponent, 0)
+	lineID = append(lineID, &linebot.TextComponent{
+		Color: "#aaaaaa",
+		Size:  linebot.FlexTextSizeTypeSm,
+		Text:  "Line ID",
+		Flex:  &flex1,
+	})
+	lineID = append(lineID, &linebot.TextComponent{
+		Color: "#666666",
+		Size:  linebot.FlexTextSizeTypeSm,
+		Text:  name,
+		Flex:  &flex4,
+	})
+
+	components := make([]linebot.FlexComponent, 0)
+	components = append(components, &linebot.BoxComponent{
+		Layout:   linebot.FlexBoxLayoutTypeBaseline,
+		Spacing:  linebot.FlexComponentSpacingTypeSm,
+		Contents: carNumber,
+	})
+	components = append(components, &linebot.BoxComponent{
+		Layout:   linebot.FlexBoxLayoutTypeBaseline,
+		Spacing:  linebot.FlexComponentSpacingTypeSm,
+		Contents: lineID,
+	})
+
+	return []*linebot.BubbleContainer{{
+		Type: linebot.FlexContainerTypeBubble,
+		Hero: &linebot.ImageComponent{
+			Type:        linebot.FlexComponentTypeImage,
+			URL:         imageURL,
+			Size:        linebot.FlexImageSizeTypeFull,
+			AspectRatio: linebot.FlexImageAspectRatioType20to13,
+			AspectMode:  linebot.FlexImageAspectModeTypeCover,
+		},
+		Body: &linebot.BoxComponent{
+			Type:     linebot.FlexComponentTypeButton,
+			Layout:   linebot.FlexBoxLayoutTypeVertical,
+			Contents: components,
+		},
+	}}
 }
 
 func makeInfoCard() []*linebot.BubbleContainer {
