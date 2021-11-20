@@ -500,58 +500,70 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 
 	for _, catcher := range catchers {
 		flex1 := 1
-		flex3 := 3
+		flex2 := 2
 		carNumber := make([]linebot.FlexComponent, 0)
+		carNumber = append(carNumber, &linebot.IconComponent{
+			URL: "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png",
+		})
 		carNumber = append(carNumber, &linebot.TextComponent{
 			Color: "#aaaaaa",
-			Size:  linebot.FlexTextSizeTypeSm,
-			Text:  "車牌號碼",
+			Size:  linebot.FlexTextSizeTypeMd,
+			Text:  "車牌號碼:",
 			Flex:  &flex1,
 		})
 		carNumber = append(carNumber, &linebot.TextComponent{
 			Color: "#666666",
-			Size:  linebot.FlexTextSizeTypeSm,
+			Size:  linebot.FlexTextSizeTypeMd,
 			Text:  catcher.LicensePlateNumber,
-			Flex:  &flex3,
+			Flex:  &flex2,
 		})
 		lineID := make([]linebot.FlexComponent, 0)
+		lineID = append(lineID, &linebot.IconComponent{
+			URL: "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png",
+		})
 		lineID = append(lineID, &linebot.TextComponent{
 			Color: "#aaaaaa",
-			Size:  linebot.FlexTextSizeTypeSm,
-			Text:  "用戶名稱",
+			Size:  linebot.FlexTextSizeTypeMd,
+			Text:  "車主名稱:",
 			Flex:  &flex1,
 		})
 		lineID = append(lineID, &linebot.TextComponent{
 			Color: "#666666",
-			Size:  linebot.FlexTextSizeTypeSm,
+			Size:  linebot.FlexTextSizeTypeMd,
 			Text:  catcher.UserName,
-			Flex:  &flex3,
+			Flex:  &flex2,
 		})
 		place := make([]linebot.FlexComponent, 0)
+		place = append(place, &linebot.IconComponent{
+			URL: "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png",
+		})
 		place = append(place, &linebot.TextComponent{
 			Color: "#aaaaaa",
-			Size:  linebot.FlexTextSizeTypeSm,
-			Text:  "出沒地點",
+			Size:  linebot.FlexTextSizeTypeMd,
+			Text:  "出沒地點:",
 			Flex:  &flex1,
 		})
 		place = append(place, &linebot.TextComponent{
 			Color: "#666666",
-			Size:  linebot.FlexTextSizeTypeSm,
+			Size:  linebot.FlexTextSizeTypeMd,
 			Text:  catcher.HauntedPlaces,
-			Flex:  &flex3,
+			Flex:  &flex2,
 		})
 		group := make([]linebot.FlexComponent, 0)
+		group = append(group, &linebot.IconComponent{
+			URL: "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png",
+		})
 		group = append(group, &linebot.TextComponent{
 			Color: "#aaaaaa",
-			Size:  linebot.FlexTextSizeTypeSm,
-			Text:  "所在群組",
+			Size:  linebot.FlexTextSizeTypeMd,
+			Text:  "所在群組:",
 			Flex:  &flex1,
 		})
 		group = append(group, &linebot.TextComponent{
 			Color: "#666666",
-			Size:  linebot.FlexTextSizeTypeSm,
+			Size:  linebot.FlexTextSizeTypeMd,
 			Text:  catcher.GroupName,
-			Flex:  &flex3,
+			Flex:  &flex2,
 		})
 
 		components := make([]linebot.FlexComponent, 0)
@@ -583,7 +595,7 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 				URL:         catcher.CoverURL,
 				Size:        linebot.FlexImageSizeTypeFull,
 				AspectRatio: linebot.FlexImageAspectRatioType20to13,
-				AspectMode:  linebot.FlexImageAspectModeTypeFit,
+				AspectMode:  linebot.FlexImageAspectModeTypeCover,
 			},
 			Body: &linebot.BoxComponent{
 				Type:     linebot.FlexComponentTypeButton,
