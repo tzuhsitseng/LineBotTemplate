@@ -176,7 +176,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							}
 							if catcher, ok := catchers.Load(userID); ok {
 								if catcherInfo, ok := catcher.(CatcherInfo); ok {
-									catcherInfo.LicensePlateNumber = message.Text
+									catcherInfo.LicensePlateNumber = strings.ToUpper(message.Text)
 									catchers.Store(userID, catcherInfo)
 									catcherStatuses.Store(userID, CatcherStatusHauntedPlaces)
 									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請輸入出沒地點")).Do(); err != nil {
