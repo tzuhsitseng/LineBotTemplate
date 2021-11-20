@@ -24,6 +24,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -110,6 +111,8 @@ var (
 	catcherStatuses = sync.Map{}
 )
 
+var licensePlateNumberRegexp = regexp.MustCompile("^[A-Za-z]{3}\\-[0-9]{4}$")
+
 func main() {
 	var err error
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
@@ -164,6 +167,13 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					if ok {
 						switch catcherStatus {
 						case CatcherStatusLicensePlateNumber:
+							if !licensePlateNumberRegexp.MatchString(message.Text) {
+								if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("錯誤的車牌號碼，請重新輸入")).Do(); err != nil {
+									log.Println(err)
+									return
+								}
+								return
+							}
 							if catcher, ok := catchers.Load(userID); ok {
 								if catcherInfo, ok := catcher.(CatcherInfo); ok {
 									catcherInfo.LicensePlateNumber = message.Text
