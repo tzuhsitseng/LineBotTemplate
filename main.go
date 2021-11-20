@@ -650,7 +650,7 @@ func makeInfoCard() []*linebot.BubbleContainer {
 	newsComponent := make([]linebot.FlexComponent, 0)
 	newsComponent = append(newsComponent, &linebot.ButtonComponent{
 		Type:   linebot.FlexComponentTypeButton,
-		Action: linebot.NewURIAction("入群必讀", "https://kamiq.club/news?nid=214"),
+		Action: linebot.NewURIAction("入群必讀", "https://kamiq.club/news?hid=498&nid=214"),
 		Style:  linebot.FlexButtonStyleTypePrimary,
 	})
 	siteComponent := make([]linebot.FlexComponent, 0)
