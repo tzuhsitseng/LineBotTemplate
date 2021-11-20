@@ -149,14 +149,14 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				case *linebot.TextMessage:
 					if message.Text == "一起抓抓樂" {
 						if _, err := bot.GetGroupMemberProfile("C9e940992c239eb57663525cde6b26a6b", userID).Do(); err != nil {
-							if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("授權未通過")).Do(); err != nil {
+							if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("授權未通過，請確認已在 KamiQ 車主限定群")).Do(); err != nil {
 								log.Println(err)
 							}
 							return
 						}
 						catchers.Store(userID, CatcherInfo{UserID: userID})
 						catcherStatuses.Store(userID, CatcherStatusLicensePlateNumber)
-						if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("授權通過，請輸入車牌號碼")).Do(); err != nil {
+						if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("授權通過，請輸入車牌號碼含-，例 ABC-1234")).Do(); err != nil {
 							log.Println(err)
 							return
 						}
@@ -168,7 +168,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						switch catcherStatus {
 						case CatcherStatusLicensePlateNumber:
 							if !licensePlateNumberRegexp.MatchString(message.Text) {
-								if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("錯誤的車牌號碼，請重新輸入")).Do(); err != nil {
+								if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("錯誤的車牌號碼格式，請重新輸入")).Do(); err != nil {
 									log.Println(err)
 									return
 								}
@@ -179,7 +179,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									catcherInfo.LicensePlateNumber = strings.ToUpper(message.Text)
 									catchers.Store(userID, catcherInfo)
 									catcherStatuses.Store(userID, CatcherStatusHauntedPlaces)
-									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請輸入出沒地點")).Do(); err != nil {
+									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請輸入日常工作生活區域")).Do(); err != nil {
 										log.Println(err)
 									}
 								}
@@ -191,7 +191,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									catcherInfo.HauntedPlaces = message.Text
 									catchers.Store(userID, catcherInfo)
 									catcherStatuses.Store(userID, CatcherStatusCoverURL)
-									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請上傳愛車照片")).Do(); err != nil {
+									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請上傳最得意的愛車照片")).Do(); err != nil {
 										log.Println(err)
 									}
 								}
@@ -524,7 +524,7 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 		lineID = append(lineID, &linebot.TextComponent{
 			Color: "#aaaaaa",
 			Size:  linebot.FlexTextSizeTypeMd,
-			Text:  "車主名稱:",
+			Text:  "LINE名稱:",
 			Flex:  &flex1,
 		})
 		lineID = append(lineID, &linebot.TextComponent{
