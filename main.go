@@ -285,10 +285,12 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 								}
 							}
 
-							if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewFlexMessage("抓抓樂資訊", &linebot.CarouselContainer{
-								Type:     linebot.FlexContainerTypeCarousel,
-								Contents: makeCatcherContents(finalCatchers),
-							})).Do(); err != nil {
+							if _, err := bot.ReplyMessage(event.ReplyToken,
+								linebot.NewTextMessage("抓抓樂資料已更新完成"),
+								linebot.NewFlexMessage("抓抓樂資訊", &linebot.CarouselContainer{
+									Type:     linebot.FlexContainerTypeCarousel,
+									Contents: makeCatcherContents(finalCatchers),
+								})).Do(); err != nil {
 								log.Println(err)
 							}
 						}
