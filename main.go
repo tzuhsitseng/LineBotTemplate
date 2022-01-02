@@ -271,7 +271,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									UserID:             catcherInfo.UserID,
 									UserName:           catcherInfo.UserName,
 									HauntedPlaces:      catcherInfo.HauntedPlaces,
-									SelfIntro:          catcherInfo.SelfIntro,
+									SelfIntro:          &catcherInfo.SelfIntro,
 									CoverURL:           catcherInfo.CoverURL,
 									GroupID:            groupID,
 									GroupName:          ownGroupNames[idx],
@@ -596,6 +596,27 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 			Flex:  &flex2,
 		})
 
+		selfIntro := ""
+		if catcher.SelfIntro != nil {
+			selfIntro = *catcher.SelfIntro
+		}
+		intro := make([]linebot.FlexComponent, 0)
+		intro = append(intro, &linebot.IconComponent{
+			URL: "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png",
+		})
+		intro = append(intro, &linebot.TextComponent{
+			Color: "#aaaaaa",
+			Size:  linebot.FlexTextSizeTypeMd,
+			Text:  "自我介紹:",
+			Flex:  &flex1,
+		})
+		intro = append(intro, &linebot.TextComponent{
+			Color: "#666666",
+			Size:  linebot.FlexTextSizeTypeMd,
+			Text:  selfIntro,
+			Flex:  &flex2,
+		})
+
 		components := make([]linebot.FlexComponent, 0)
 		components = append(components, &linebot.BoxComponent{
 			Layout:   linebot.FlexBoxLayoutTypeBaseline,
@@ -616,6 +637,11 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 			Layout:   linebot.FlexBoxLayoutTypeBaseline,
 			Spacing:  linebot.FlexComponentSpacingTypeSm,
 			Contents: group,
+		})
+		components = append(components, &linebot.BoxComponent{
+			Layout:   linebot.FlexBoxLayoutTypeBaseline,
+			Spacing:  linebot.FlexComponentSpacingTypeSm,
+			Contents: intro,
 		})
 
 		result = append(result, &linebot.BubbleContainer{

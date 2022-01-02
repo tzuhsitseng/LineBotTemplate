@@ -13,7 +13,7 @@ type Catcher struct {
 	LicensePlateNumber string
 	UserID             string
 	UserName           string
-	SelfIntro          string
+	SelfIntro          *string
 	HauntedPlaces      string
 	CoverURL           string
 	GroupID            string
