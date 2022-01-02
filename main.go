@@ -160,7 +160,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				case *linebot.TextMessage:
 					if message.Text == "一起抓抓樂" {
 						authorized := false
-						for _, gid := range bigGroupIDs {
+						for gid := range bigGroupIDs {
 							if _, err := bot.GetGroupMemberProfile(gid, userID).Do(); err == nil {
 								authorized = true
 								break
