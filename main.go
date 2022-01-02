@@ -287,7 +287,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									UserID:             catcherInfo.UserID,
 									UserName:           catcherInfo.UserName,
 									HauntedPlaces:      catcherInfo.HauntedPlaces,
-									SelfIntro:          &catcherInfo.SelfIntro,
+									SelfIntro:          catcherInfo.SelfIntro,
 									CoverURL:           catcherInfo.CoverURL,
 									GroupID:            groupID,
 									GroupName:          ownGroupNames[idx],
@@ -614,10 +614,6 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 			Flex:  &flex2,
 		})
 
-		selfIntro := ""
-		if catcher.SelfIntro != nil {
-			selfIntro = *catcher.SelfIntro
-		}
 		intro := make([]linebot.FlexComponent, 0)
 		intro = append(intro, &linebot.IconComponent{
 			URL: "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png",
@@ -631,7 +627,7 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 		intro = append(intro, &linebot.TextComponent{
 			Color: "#666666",
 			Size:  linebot.FlexTextSizeTypeMd,
-			Text:  selfIntro,
+			Text:  catcher.SelfIntro,
 			Flex:  &flex2,
 		})
 
