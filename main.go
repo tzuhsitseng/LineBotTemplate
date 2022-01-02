@@ -335,7 +335,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			} else if event.Type == linebot.EventTypeMessage {
 				switch message := event.Message.(type) {
 				case *linebot.TextMessage:
-					log.Printf("group id: %s, msg: %s", groupID, message.Text)
+					//log.Printf("group id: %s, msg: %s", groupID, message.Text)
 
 					if !strings.HasPrefix(message.Text, "?") &&
 						!strings.HasSuffix(message.Text, "?") &&
@@ -668,7 +668,7 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 				AspectMode:  linebot.FlexImageAspectModeTypeCover,
 			},
 			Body: &linebot.BoxComponent{
-				Type:     linebot.FlexComponentTypeButton,
+				Type:     linebot.FlexComponentTypeBox,
 				Layout:   linebot.FlexBoxLayoutTypeVertical,
 				Contents: components,
 			},
