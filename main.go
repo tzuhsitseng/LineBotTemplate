@@ -160,7 +160,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				case *linebot.TextMessage:
 					if message.Text == "一起抓抓樂" {
 						authorized := false
-						for gid := range bigGroupIDs {
+						for gid := range groupIDs {
 							if _, err := bot.GetGroupMemberProfile(gid, userID).Do(); err == nil {
 								authorized = true
 								break
@@ -211,7 +211,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									catcherInfo.HauntedPlaces = message.Text
 									catchers.Store(userID, catcherInfo)
 									catcherStatuses.Store(userID, CatcherStatusSelfIntro)
-									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請輸入自我介紹 (限 50 字)，若無自介請輸入 52~~，自介將會顯示我愛蛇哥")).Do(); err != nil {
+									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，\n請輸入自我介紹 (限 50 字)，\n若無自介請輸入 52~~，\n自介將會顯示我愛蛇哥")).Do(); err != nil {
 										log.Println(err)
 									}
 								}
