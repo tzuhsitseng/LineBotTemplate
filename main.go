@@ -73,9 +73,17 @@ var imgurClientID string
 var (
 	groupIDs = map[string]string{
 		//"C9e940992c239eb57663525cde6b26a6b": "bot 測試群",
-		"Cc36a07572245c408431d11bd7fd94a45": "北區二群",
-		//"C9fff1abaab5eddda37095a31b11b9335": "車主限定三群",
 		//"Ca23770eb185ea43e725a71cda54a7e9e": "退休生活",
+		"Cb6cfd28af50d41e8dd69b83efa7a5d26": "北區一群",
+		"Cc36a07572245c408431d11bd7fd94a45": "北區二群",
+		"C70b22d41c71fbccd1f557f6010f1d3e5": "中區二群",
+		"Cff9579c1947754d35387850add5c437e": "南區一群",
+	}
+
+	bigGroupIDs = map[string]string{
+		"C193b9f94b6774670be047cf22575d99f": "全國一群",
+		"C1ee14832848258d925ab801cb91fd76e": "全國二群",
+		"C9fff1abaab5eddda37095a31b11b9335": "全國三群",
 	}
 )
 
@@ -151,12 +159,20 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				switch message := event.Message.(type) {
 				case *linebot.TextMessage:
 					if message.Text == "一起抓抓樂" {
-						if _, err := bot.GetGroupMemberProfile("C9e940992c239eb57663525cde6b26a6b", userID).Do(); err != nil {
+						authorized := false
+						for _, gid := range bigGroupIDs {
+							if _, err := bot.GetGroupMemberProfile(gid, userID).Do(); err == nil {
+								authorized = true
+								break
+							}
+						}
+						if !authorized {
 							if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("授權未通過，請確認已在 KamiQ 車主限定群")).Do(); err != nil {
 								log.Println(err)
 							}
 							return
 						}
+
 						catchers.Store(userID, CatcherInfo{UserID: userID})
 						catcherStatuses.Store(userID, CatcherStatusLicensePlateNumber)
 						if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("授權通過，請輸入車牌號碼含-，例如: ABC-1234")).Do(); err != nil {
