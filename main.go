@@ -122,7 +122,10 @@ var (
 	catcherStatuses = sync.Map{}
 )
 
-var licensePlateNumberRegexp = regexp.MustCompile("^[A-Za-z]{3}\\-[0-9]{4}$")
+var (
+	oldLicensePlateNumberRegexp = regexp.MustCompile("^[0-9]{4}\\-[A-Za-z0-9]{2}$")
+	newLicensePlateNumberRegexp = regexp.MustCompile("^[A-Za-z]{3}\\-[0-9]{4}$")
+)
 
 func main() {
 	var err error
@@ -186,7 +189,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					if ok {
 						switch catcherStatus {
 						case CatcherStatusLicensePlateNumber:
-							if !licensePlateNumberRegexp.MatchString(message.Text) {
+							if !newLicensePlateNumberRegexp.MatchString(message.Text) && !oldLicensePlateNumberRegexp.MatchString(message.Text) {
 								if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("錯誤的車牌號碼格式，請重新輸入")).Do(); err != nil {
 									log.Println(err)
 									return
