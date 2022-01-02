@@ -485,7 +485,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							linebot.NewURIAction("更多", "https://kamiq.club/article?sid=349"),
 						)
 					default:
-						if num, err := strconv.Atoi(msg); err == nil && num < 10000 {
+						if num, err := strconv.Atoi(msg); err == nil && num < 10000 && num > 999 {
 							catchers, _ := catcherRepo.SearchByLicensePlateNumber(groupID, msg)
 							if len(catchers) > 0 {
 								if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewFlexMessage("抓抓樂資訊", &linebot.CarouselContainer{
