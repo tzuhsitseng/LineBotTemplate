@@ -72,9 +72,9 @@ var imgurClientID string
 
 var (
 	groupIDs = map[string]string{
-		"C9e940992c239eb57663525cde6b26a6b": "bot 測試群",
+		//"C9e940992c239eb57663525cde6b26a6b": "bot 測試群",
 		"Cc36a07572245c408431d11bd7fd94a45": "北區二群",
-		"C9fff1abaab5eddda37095a31b11b9335": "車主限定三群",
+		//"C9fff1abaab5eddda37095a31b11b9335": "車主限定三群",
 		//"Ca23770eb185ea43e725a71cda54a7e9e": "退休生活",
 	}
 )
