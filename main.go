@@ -567,6 +567,7 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 			Size:  linebot.FlexTextSizeTypeMd,
 			Text:  catcher.LicensePlateNumber,
 			Flex:  &flex2,
+			Wrap:  true,
 		})
 		lineID := make([]linebot.FlexComponent, 0)
 		lineID = append(lineID, &linebot.IconComponent{
@@ -583,6 +584,7 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 			Size:  linebot.FlexTextSizeTypeMd,
 			Text:  catcher.UserName,
 			Flex:  &flex2,
+			Wrap:  true,
 		})
 		place := make([]linebot.FlexComponent, 0)
 		place = append(place, &linebot.IconComponent{
@@ -599,6 +601,7 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 			Size:  linebot.FlexTextSizeTypeMd,
 			Text:  catcher.HauntedPlaces,
 			Flex:  &flex2,
+			Wrap:  true,
 		})
 		group := make([]linebot.FlexComponent, 0)
 		group = append(group, &linebot.IconComponent{
@@ -615,6 +618,7 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 			Size:  linebot.FlexTextSizeTypeMd,
 			Text:  catcher.GroupName,
 			Flex:  &flex2,
+			Wrap:  true,
 		})
 
 		intro := make([]linebot.FlexComponent, 0)
@@ -632,6 +636,7 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 			Size:  linebot.FlexTextSizeTypeMd,
 			Text:  catcher.SelfIntro,
 			Flex:  &flex2,
+			Wrap:  true,
 		})
 
 		components := make([]linebot.FlexComponent, 0)
