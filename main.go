@@ -556,7 +556,7 @@ func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleConta
 		lineID = append(lineID, &linebot.TextComponent{
 			Color: "#aaaaaa",
 			Size:  linebot.FlexTextSizeTypeMd,
-			Text:  "LINE名稱:",
+			Text:  "賴的名稱:",
 			Flex:  &flex1,
 		})
 		lineID = append(lineID, &linebot.TextComponent{
