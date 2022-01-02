@@ -26,6 +26,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"unicode/utf8"
 
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 	"github.com/tzuhsitseng/LineBotTemplate/repositories"
@@ -222,7 +223,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							return
 
 						case CatcherStatusSelfIntro:
-							if len(message.Text) > 50 {
+							if utf8.RuneCountInString(message.Text) > 50 {
 								if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("已超出字數上限 (50)，請重新輸入")).Do(); err != nil {
 									log.Println(err)
 									return
