@@ -16,8 +16,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/line/line-bot-sdk-go/v7/linebot"
-	"github.com/tzuhsitseng/LineBotTemplate/repositories"
 	"io"
 	"io/ioutil"
 	"log"
@@ -28,6 +26,9 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/tzuhsitseng/LineBotTemplate/repositories"
 )
 
 type CatcherStatus int
@@ -37,6 +38,7 @@ type CatcherInfo struct {
 	UserID             string
 	UserName           string
 	HauntedPlaces      string
+	SelfIntro          string
 	CoverURL           string
 	GroupIDs           []string
 	GroupNames         []string
@@ -60,6 +62,7 @@ type ImgurResp struct {
 const (
 	CatcherStatusLicensePlateNumber CatcherStatus = iota + 1
 	CatcherStatusHauntedPlaces
+	CatcherStatusSelfIntro
 	CatcherStatusCoverURL
 )
 
@@ -156,7 +159,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						}
 						catchers.Store(userID, CatcherInfo{UserID: userID})
 						catcherStatuses.Store(userID, CatcherStatusLicensePlateNumber)
-						if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("授權通過，請輸入車牌號碼含-，例 ABC-1234")).Do(); err != nil {
+						if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("授權通過，請輸入車牌號碼含-，例如: ABC-1234")).Do(); err != nil {
 							log.Println(err)
 							return
 						}
@@ -179,16 +182,40 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									catcherInfo.LicensePlateNumber = strings.ToUpper(message.Text)
 									catchers.Store(userID, catcherInfo)
 									catcherStatuses.Store(userID, CatcherStatusHauntedPlaces)
-									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請輸入日常工作生活區域")).Do(); err != nil {
+									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請輸入日常工作生活區域，例如: 龜山島")).Do(); err != nil {
 										log.Println(err)
 									}
 								}
 							}
 							return
+
 						case CatcherStatusHauntedPlaces:
 							if catcher, ok := catchers.Load(userID); ok {
 								if catcherInfo, ok := catcher.(CatcherInfo); ok {
 									catcherInfo.HauntedPlaces = message.Text
+									catchers.Store(userID, catcherInfo)
+									catcherStatuses.Store(userID, CatcherStatusSelfIntro)
+									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請輸入自我介紹 (限 50 字)，若無自介請輸入 52~~，自介將會顯示我愛蛇哥")).Do(); err != nil {
+										log.Println(err)
+									}
+								}
+							}
+							return
+
+						case CatcherStatusSelfIntro:
+							if len(message.Text) > 50 {
+								if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("已超出字數上限 (50)，請重新輸入")).Do(); err != nil {
+									log.Println(err)
+									return
+								}
+								return
+							}
+							if message.Text == "52~~" {
+								message.Text = "我愛蛇哥"
+							}
+							if catcher, ok := catchers.Load(userID); ok {
+								if catcherInfo, ok := catcher.(CatcherInfo); ok {
+									catcherInfo.SelfIntro = message.Text
 									catchers.Store(userID, catcherInfo)
 									catcherStatuses.Store(userID, CatcherStatusCoverURL)
 									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請上傳最得意的愛車照片")).Do(); err != nil {
@@ -244,6 +271,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									UserID:             catcherInfo.UserID,
 									UserName:           catcherInfo.UserName,
 									HauntedPlaces:      catcherInfo.HauntedPlaces,
+									SelfIntro:          catcherInfo.SelfIntro,
 									CoverURL:           catcherInfo.CoverURL,
 									GroupID:            groupID,
 									GroupName:          ownGroupNames[idx],

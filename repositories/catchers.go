@@ -1,10 +1,11 @@
 package repositories
 
 import (
+	"os"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"os"
 )
 
 type Catcher struct {
@@ -12,6 +13,7 @@ type Catcher struct {
 	LicensePlateNumber string
 	UserID             string
 	UserName           string
+	SelfIntro          string
 	HauntedPlaces      string
 	CoverURL           string
 	GroupID            string
@@ -38,7 +40,7 @@ func NewCatcherRepository() CatchersRepository {
 func (r *catcherRepository) Create(catcher Catcher) (int, error) {
 	return catcher.ID, r.db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "group_id"}, {Name: "user_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"license_plate_number", "user_name", "haunted_places", "cover_url", "group_name"}),
+		DoUpdates: clause.AssignmentColumns([]string{"license_plate_number", "user_name", "haunted_places", "self_intro", "cover_url", "group_name"}),
 	}).Create(&catcher).Error
 }
 
