@@ -215,7 +215,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									catcherInfo.HauntedPlaces = message.Text
 									catchers.Store(userID, catcherInfo)
 									catcherStatuses.Store(userID, CatcherStatusSelfIntro)
-									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，\n請輸入自我介紹 (限 50 字)，\n若無自介請輸入 52~~，\n自介將會顯示我愛蛇哥")).Do(); err != nil {
+									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成\n請輸入自我介紹 (限 50 字)\n若無自介請輸入 52~~\n自介將會顯示我愛蛇哥")).Do(); err != nil {
 										log.Println(err)
 									}
 								}
@@ -238,7 +238,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									catcherInfo.SelfIntro = message.Text
 									catchers.Store(userID, catcherInfo)
 									catcherStatuses.Store(userID, CatcherStatusCoverURL)
-									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請上傳最得意的愛車照片")).Do(); err != nil {
+									if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("設定完成，請上傳最得意的愛車照片\n建議橫式照片，較不易被裁切")).Do(); err != nil {
 										log.Println(err)
 									}
 								}
