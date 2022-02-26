@@ -498,6 +498,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 								})).Do(); err != nil {
 									log.Println(err)
 								}
+							} else {
+								if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("捕獲野生卡米!!\n趕快收服牠吧!!\n目前該車號已被發現 次")).Do(); err != nil {
+									log.Println(err)
+								}
 							}
 						}
 					}
