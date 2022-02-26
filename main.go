@@ -72,7 +72,7 @@ var catcherRepo repositories.CatchersRepository
 var imgurClientID string
 
 var (
-	groupIDs = map[string]string{
+	regionalGroupIDs = map[string]string{
 		//"C9e940992c239eb57663525cde6b26a6b": "bot 測試群",
 		//"Ca23770eb185ea43e725a71cda54a7e9e": "退休生活",
 		"Cb6cfd28af50d41e8dd69b83efa7a5d26": "北區一群",
@@ -168,7 +168,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				case *linebot.TextMessage:
 					if message.Text == "一起抓抓樂" {
 						authorized := false
-						for gid := range groupIDs {
+						for gid := range regionalGroupIDs {
 							if _, err := bot.GetGroupMemberProfile(gid, userID).Do(); err == nil {
 								authorized = true
 								break
@@ -271,7 +271,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					ownGroupIDs := make([]string, 0)
 					ownGroupNames := make([]string, 0)
 					userName := ""
-					for groupID, groupName := range groupIDs {
+					for groupID, groupName := range regionalGroupIDs {
 						if profile, err := bot.GetGroupMemberProfile(groupID, userID).Do(); err == nil {
 							ownGroupIDs = append(ownGroupIDs, groupID)
 							ownGroupNames = append(ownGroupNames, groupName)
