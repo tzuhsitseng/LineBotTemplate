@@ -20,9 +20,16 @@ type Catcher struct {
 	GroupName          string
 }
 
+type WildCatcher struct {
+	ID                 int
+	LicensePlateNumber string
+	Count              int
+}
+
 type CatchersRepository interface {
 	Create(catcher Catcher) (int, error)
 	SearchByLicensePlateNumber(groupID, licensePlateNumber string) ([]Catcher, error)
+	IncreaseWildCatcher(licensePlateNumber string) (int, error)
 }
 
 type catcherRepository struct {
@@ -51,4 +58,20 @@ func (r *catcherRepository) SearchByLicensePlateNumber(groupID, licensePlateNumb
 		//Where("group_id = ?", groupID).
 		Where("license_plate_number like ?", "%"+licensePlateNumber+"%").
 		Find(&result).Error
+}
+
+func (r *catcherRepository) IncreaseWildCatcher(licensePlateNumber string) (int, error) {
+	var wildCatcher WildCatcher
+
+	if err := r.db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "license_plate_number"}},
+		DoUpdates: clause.Assignments(map[string]interface{}{"count": gorm.Expr("wild_catchers.count + ?", 1)}),
+	}).Create(&WildCatcher{
+		LicensePlateNumber: licensePlateNumber,
+		Count:              1,
+	}).Error; err != nil {
+		return 0, err
+	}
+
+	return wildCatcher.Count, r.db.Where("license_plate_number = ?", licensePlateNumber).First(&wildCatcher).Error
 }
