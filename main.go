@@ -562,8 +562,18 @@ func welcome(replyToken, names string) {
 
 func makeCatcherContents(catchers []repositories.Catcher) []*linebot.BubbleContainer {
 	result := make([]*linebot.BubbleContainer, 0)
+	finalCatchers := map[string]*repositories.Catcher{}
 
 	for _, catcher := range catchers {
+		catcher := catcher
+		if finalCatcher, ok := finalCatchers[catcher.LicensePlateNumber]; ok {
+			finalCatchers[catcher.LicensePlateNumber].GroupName = finalCatcher.GroupName + "/" + catcher.GroupName
+		} else {
+			finalCatchers[catcher.LicensePlateNumber] = &catcher
+		}
+	}
+
+	for _, catcher := range finalCatchers {
 		flex1 := 1
 		flex2 := 2
 		carNumber := make([]linebot.FlexComponent, 0)
