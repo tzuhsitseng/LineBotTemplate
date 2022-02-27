@@ -776,7 +776,7 @@ func makeInfoCard() []*linebot.BubbleContainer {
 	catcherComponent := make([]linebot.FlexComponent, 0)
 	catcherComponent = append(catcherComponent, &linebot.ButtonComponent{
 		Type:   linebot.FlexComponentTypeButton,
-		Action: linebot.NewURIAction("車牌抓抓樂登記", "http://tw.kamiq.club/catchcar"),
+		Action: linebot.NewURIAction("一起抓抓樂", "https://lin.ee/e6uqqPo"),
 		Style:  linebot.FlexButtonStyleTypePrimary,
 	})
 	contents = append(contents, &linebot.BubbleContainer{
@@ -809,21 +809,21 @@ func makeInfoCard() []*linebot.BubbleContainer {
 			Contents: siteComponent,
 		},
 	})
-	//contents = append(contents, &linebot.BubbleContainer{
-	//	Type: linebot.FlexContainerTypeBubble,
-	//	Hero: &linebot.ImageComponent{
-	//		Type:        linebot.FlexComponentTypeImage,
-	//		URL:         "https://kamiq.club/upload/36/news_images/5962e075-4be5-4060-8737-5142613c2ba9.jpg",
-	//		Size:        linebot.FlexImageSizeTypeFull,
-	//		AspectRatio: linebot.FlexImageAspectRatioType20to13,
-	//		AspectMode:  linebot.FlexImageAspectModeTypeCover,
-	//	},
-	//	Footer: &linebot.BoxComponent{
-	//		Type:     linebot.FlexComponentTypeButton,
-	//		Layout:   linebot.FlexBoxLayoutTypeVertical,
-	//		Contents: catcherComponent,
-	//	},
-	//})
+	contents = append(contents, &linebot.BubbleContainer{
+		Type: linebot.FlexContainerTypeBubble,
+		Hero: &linebot.ImageComponent{
+			Type:        linebot.FlexComponentTypeImage,
+			URL:         "https://i.imgur.com/rILuNbA.jpg",
+			Size:        linebot.FlexImageSizeTypeFull,
+			AspectRatio: linebot.FlexImageAspectRatioType20to13,
+			AspectMode:  linebot.FlexImageAspectModeTypeCover,
+		},
+		Footer: &linebot.BoxComponent{
+			Type:     linebot.FlexComponentTypeButton,
+			Layout:   linebot.FlexBoxLayoutTypeVertical,
+			Contents: catcherComponent,
+		},
+	})
 	return contents
 }
 
