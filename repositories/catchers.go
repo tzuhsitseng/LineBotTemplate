@@ -54,8 +54,6 @@ func (r *catcherRepository) Create(catcher Catcher) (int, error) {
 func (r *catcherRepository) SearchByLicensePlateNumber(groupID, licensePlateNumber string) ([]Catcher, error) {
 	var result []Catcher
 	return result, r.db.
-		Debug().
-		//Where("group_id = ?", groupID).
 		Where("license_plate_number like ?", "%"+licensePlateNumber+"%").
 		Find(&result).Error
 }
